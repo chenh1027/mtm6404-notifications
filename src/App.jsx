@@ -1,33 +1,60 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import notifications from './notifications'
 import './App.css'
 
+function Page({ children }) {
+  return (
+    <div className="page">
+      {children}
+    </div>
+  )
+}
+
+function Notification({ notification, clearNotification }) {
+  return (
+    <div className="notification">
+      <p>ID: {notification.id}</p>
+      <h2>{notification.name}</h2>
+      <p>{notification.message}</p>
+
+      <button onClick={() => clearNotification(notification.id)}>
+        Clear
+      </button>
+    </div>
+  )
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [notificationList, setNotificationList] = useState(notifications)
+
+  function clearNotification(id) {
+    setNotificationList(
+      notificationList.filter(notification => notification.id !== id)
+    )
+  }
+
+  function clearAllNotifications() {
+    setNotificationList([])
+  }
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <Page>
+      <h1>Notifications</h1>
+
+      <p>Number of notifications: {notificationList.length}</p>
+
+      <button onClick={clearAllNotifications}>
+        Clear All
+      </button>
+
+      {notificationList.map(notification => (
+        <Notification
+          key={notification.id}
+          notification={notification}
+          clearNotification={clearNotification}
+        />
+      ))}
+    </Page>
   )
 }
 
